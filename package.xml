@@ -15,4 +15,5 @@
 
   <exec_depend>roslaunch</exec_depend>
   <exec_depend>rospy</exec_depend>
+  <exec_depend>image_transport_plugins</exec_depend>
 </package>
