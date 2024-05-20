@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="vpr_dataset_creator_ros" type="dataset_creator.py" name="dataset_creator" output="screen"/>
+</launch>
