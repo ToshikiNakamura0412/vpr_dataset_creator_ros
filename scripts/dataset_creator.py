@@ -6,6 +6,7 @@ from typing import Optional
 import cv2 as cv
 import numpy as np
 import rospy
+from cv_bridge import CvBridge
 from geometry_msgs.msg import Pose, PoseWithCovarianceStamped
 from sensor_msgs.msg import Image
 from std_srvs.srv import Trigger, TriggerResponse
@@ -61,11 +62,14 @@ class DatasetCreator:
                 self._base_pose = None
 
     def _save_image(self, msg: Image):
-        image = np.frombuffer(msg.data, dtype=np.uint8).reshape(
-            msg.height, msg.width, -1
-        )
+        image = CvBridge().imgmsg_to_cv2(msg, "mono8")
+        image = self._scale_to_resolution(image, 240)
         cv.imwrite(f"{self._dir_path}/image_{self._data_count}.png", image)
         rospy.loginfo(f"Saved image_{self._data_count}.png")
+
+    def _scale_to_resolution(self, image:Image, resolution: int):
+       h, w = image.shape[:2]
+       return cv.resize(image, (int(w * resolution / h), resolution))
 
     def _save_data(self):
         with open(f"{self._dir_path}/data.csv", "a") as f:
