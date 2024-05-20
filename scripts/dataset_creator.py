@@ -22,7 +22,7 @@ class Data:
 
 class DatasetCreator:
     def __init__(self):
-        self._dist_threshold: float = rospy.get_param("~dist_threshold", 1.0)
+        self._dist_threshold: float = rospy.get_param("~dist_threshold", 5.0)
         self._dir_path: str = rospy.get_param("~dir_path", "dataset")
         self._create_dataset_server: rospy.Service = rospy.Service(
             "~start_trigger", Trigger, self._handle_create_dataset
@@ -35,13 +35,13 @@ class DatasetCreator:
         )
         self._start_flag: bool = False
         self._pose: Pose = Pose()
-        self._base_pose: Optional[Pose] = Optional[Pose]
+        self._base_pose: Optional[Pose] = None
         self._data_count: int = 0
 
     def _handle_create_dataset(self, req: Trigger) -> TriggerResponse:
         rospy.loginfo("Creating dataset...")
         self._start_flag = True
-        return TriggerResponse(success=True, message="Dataset created")
+        return TriggerResponse(success=True, message="Start creating dataset...")
 
     def _pose_callback(self, msg: PoseWithCovarianceStamped):
         self._pose = msg.pose.pose
