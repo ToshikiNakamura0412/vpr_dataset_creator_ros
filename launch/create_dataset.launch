@@ -1,4 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="vpr_dataset_creator_ros" type="dataset_creator.py" name="dataset_creator" output="screen"/>
+    <arg name="image_topic" default="/grasscam/image_raw"/>
+    <node pkg="vpr_dataset_creator_ros" type="dataset_creator.py" name="dataset_creator" output="screen">
+        <remap from="camera/rgb/image_raw" to="$(arg image_topic)"/>
+    </node>
+    <include file="$(find visual_place_recognition_ros)/launch/unzipping.launch">
+        <arg name="image_topic" value="$(arg image_topic)"/>
+    </include>
 </launch>
