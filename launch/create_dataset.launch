@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="image_topic" default="/grasscam/image_raw"/>
+    <arg name="dir_path" default="$(find vpr_dataset_creator_ros)/dataset"/>
+    <arg name="bag_file" default="$(env HOME)/bagfiles/rwrc23_main_2024-04-25-16-17-54.bag"/>
+
+    <node pkg="vpr_dataset_creator_ros" type="dataset_creator.py" name="dataset_creator" output="screen">
+        <param name="dir_path" value="$(arg dir_path)"/>
+        <param name="dist_threshold" value="3.0"/>
+        <remap from="camera/rgb/image_raw" to="$(arg image_topic)"/>
+    </node>
+    <include file="$(find visual_place_recognition_ros)/launch/unzipping.launch">
+        <arg name="image_topic" value="$(arg image_topic)"/>
+    </include>
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find vpr_dataset_creator_ros)/launch/rviz.rviz"/>
+    <node pkg="rosbag" type="play" name="rosbag" output="screen" args="$(arg bag_file) --pause"/>
+</launch>
